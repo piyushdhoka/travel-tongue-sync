@@ -88,6 +88,14 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
 }
 
 @layer components {
@@ -124,13 +132,10 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
+@layer utilities {
+  .bg-dot-pattern {
+    background-image: radial-gradient(circle at center, hsl(var(--border)) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
   }
 }
 

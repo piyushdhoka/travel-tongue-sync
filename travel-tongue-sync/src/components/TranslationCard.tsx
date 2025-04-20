@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -74,21 +73,22 @@ export default function TranslationCard({
   return (
     <Card 
       className={cn(
-        `w-full transition-all duration-500 ease-out transform`,
+        "w-full transition-all duration-300 ease-out transform hover:shadow-lg",
+        "border-opacity-50 backdrop-blur-sm",
         isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
         isTranslating && !isSource ? "animate-pulse" : "",
         className
       )}
     >
-      <CardHeader>
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-xl font-semibold">
             {title}
             {isTranslating && !isSource && (
               <span className="inline-block animate-spin">⌛</span>
             )}
           </CardTitle>
-          <Badge variant="outline" className="text-xs animate-fade-in">
+          <Badge variant="secondary" className="text-xs animate-fade-in hover:bg-primary/20">
             <span className="mr-1">🌐</span>
             {SUPPORTED_LANGUAGES.find(lang => lang.code === language)?.name || language}
           </Badge>

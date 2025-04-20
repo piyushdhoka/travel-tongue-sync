@@ -1,8 +1,8 @@
-
 import { Button } from "@/components/ui/button";
-import { Settings, LogOut } from "lucide-react";
+import { Settings, LogOut, Sun, Moon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Globe } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface HeaderProps {
   onSettingsClick: () => void;
@@ -10,32 +10,56 @@ interface HeaderProps {
 }
 
 export default function Header({ onSettingsClick, onLogout }: HeaderProps) {
+  const { theme, setTheme } = useTheme();
+
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold flex items-center">
-          <span className="text-primary mr-2">🌐</span>
-          Travel Tongue Sync
-        </h1>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={onSettingsClick}>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="mr-2">🌐</span>
+            Travel Tongue Sync
+          </h1>
+          <Badge variant="outline" className="animate-fade-in">
+            <Globe className="h-3 w-3 mr-1" />
+            Groq Powered
+          </Badge>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="hover:scale-110 transition-transform"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            {theme === "light" ? (
+              <Moon className="h-4 w-4" />
+            ) : (
+              <Sun className="h-4 w-4" />
+            )}
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="hover:scale-110 transition-transform"
+            onClick={onSettingsClick}
+          >
             <Settings className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" onClick={onLogout}>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="hover:scale-110 transition-transform"
+            onClick={onLogout}
+          >
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
       </div>
       
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground mb-4">
-          Powered by Groq's AI technology for real-time language translation. Perfect for travelers and remote teams.
-        </p>
-        <Badge variant="outline" className="mb-4">
-          <Globe className="h-3 w-3 mr-1" />
-          Groq Powered
-        </Badge>
-      </div>
+      <p className="text-sm text-muted-foreground mb-6 text-center italic">
+        Experience real-time language translation powered by Groq's AI technology – Your perfect companion for global communication
+      </p>
     </>
   );
 }

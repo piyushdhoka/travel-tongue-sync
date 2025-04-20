@@ -1,5 +1,5 @@
-
 import LanguageSelector from "../LanguageSelector";
+import { ArrowLeftRight } from "lucide-react";
 
 interface LanguageControlsProps {
   sourceLanguage: string;
@@ -15,16 +15,21 @@ export default function LanguageControls({
   onTargetLanguageChange,
 }: LanguageControlsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div className="flex items-center gap-4">
       <LanguageSelector
         value={sourceLanguage}
         onChange={onSourceLanguageChange}
         label="From"
+        className="w-[180px]"
       />
+      <div className="flex items-center justify-center w-8 h-8">
+        <ArrowLeftRight className="w-5 h-5 text-muted-foreground animate-pulse" />
+      </div>
       <LanguageSelector 
         value={targetLanguage}
         onChange={onTargetLanguageChange}
         label="To"
+        className="w-[180px]"
       />
     </div>
   );

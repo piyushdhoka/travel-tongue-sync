@@ -11,6 +11,7 @@ import LanguageControls from "./translation/LanguageControls";
 import TranslationTabs from "./translation/TranslationTabs";
 import TranslationContent from "./translation/TranslationContent";
 import TranslationHistory from "./translation/TranslationHistory";
+import LanguageGreetingBar from "./translation/LanguageGreetingBar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { BookOpen } from "lucide-react";
@@ -104,64 +105,69 @@ export default function TranslationApp() {
   }, [sourceText, sourceLanguage, targetLanguage]);
 
   return (
-    <div 
-      className="min-h-screen py-8 px-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800"
-      style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2000&q=80')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundBlendMode: 'overlay',
-      }}
-    >
-      <div className="container mx-auto max-w-4xl">
-        <Card className="p-6 shadow-lg bg-card/95 backdrop-blur-sm border-t border-white/20">
-          <Header
-            onSettingsClick={() => setIsApiKeyModalOpen(true)}
-            onLogout={handleLogout}
-          />
-          
-          <div className="flex justify-between items-center mb-4">
-            <LanguageControls
-              sourceLanguage={sourceLanguage}
-              targetLanguage={targetLanguage}
-              onSourceLanguageChange={setSourceLanguage}
-              onTargetLanguageChange={setTargetLanguage}
+    <div className="min-h-screen relative bg-dot-pattern">
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/50 to-background opacity-90" />
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_200px,theme(colors.primary.DEFAULT/0.05),transparent_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_500px_at_80%_500px,theme(colors.secondary.DEFAULT/0.05),transparent_80%)]" />
+      </div>
+      <div className="relative">
+        <div className="pt-4">
+          <LanguageGreetingBar />
+        </div>
+        <div className="container mx-auto max-w-5xl py-6 px-4">
+          <Card className="relative p-6 shadow-xl bg-background/40 backdrop-blur-xl border border-border/20 rounded-xl">
+            <Header
+              onSettingsClick={() => setIsApiKeyModalOpen(true)}
+              onLogout={handleLogout}
             />
-            <Dialog open={isHistoryModalOpen} onOpenChange={setIsHistoryModalOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <BookOpen className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl">
-                <TranslationHistory />
-              </DialogContent>
-            </Dialog>
-          </div>
+            
+            <div className="flex justify-between items-center mb-6">
+              <LanguageControls
+                sourceLanguage={sourceLanguage}
+                targetLanguage={targetLanguage}
+                onSourceLanguageChange={setSourceLanguage}
+                onTargetLanguageChange={setTargetLanguage}
+              />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="secondary" size="sm" className="gap-2 hover:scale-105 transition-transform">
+                    <BookOpen className="h-4 w-4" />
+                    History
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl">
+                  <TranslationHistory />
+                </DialogContent>
+              </Dialog>
+            </div>
 
-          <TranslationTabs
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
+            <TranslationTabs
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+
+            <div className="transition-all duration-500 ease-in-out">
+              <TranslationContent
+                sourceLanguage={sourceLanguage}
+                targetLanguage={targetLanguage}
+                sourceText={sourceText}
+                translatedText={translatedText}
+                isListening={isListening}
+                isTranslating={isTranslating}
+                onSourceTextChange={setSourceText}
+                onListeningToggle={() => setIsListening(!isListening)}
+                onSwapLanguages={handleSwapLanguages}
+                onTranslate={handleTranslate}
+              />
+            </div>
+          </Card>
+
+          <ApiKeyModal 
+            isOpen={isApiKeyModalOpen}
+            onClose={() => setIsApiKeyModalOpen(false)}
           />
-
-          <TranslationContent
-            sourceLanguage={sourceLanguage}
-            targetLanguage={targetLanguage}
-            sourceText={sourceText}
-            translatedText={translatedText}
-            isListening={isListening}
-            isTranslating={isTranslating}
-            onSourceTextChange={setSourceText}
-            onListeningToggle={() => setIsListening(!isListening)}
-            onSwapLanguages={handleSwapLanguages}
-            onTranslate={handleTranslate}
-          />
-        </Card>
-
-        <ApiKeyModal 
-          isOpen={isApiKeyModalOpen}
-          onClose={() => setIsApiKeyModalOpen(false)}
-        />
+        </div>
       </div>
     </div>
   );

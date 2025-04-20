@@ -1,6 +1,6 @@
-
 import TranslationCard from "../TranslationCard";
 import { Button } from "@/components/ui/button";
+import { ArrowLeftRight, SwitchCamera } from "lucide-react";
 
 interface TranslationContentProps {
   sourceLanguage: string;
@@ -28,8 +28,8 @@ export default function TranslationContent({
   onTranslate,
 }: TranslationContentProps) {
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TranslationCard
           title="Original"
           language={sourceLanguage}
@@ -47,25 +47,28 @@ export default function TranslationContent({
           isSource={false}
           isListening={false}
           onListeningToggle={() => {}}
+          isTranslating={isTranslating}
         />
       </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center gap-4">
         <Button 
           onClick={onSwapLanguages}
-          variant="secondary"
-          className="mx-2"
+          variant="outline"
+          className="group hover:scale-105 transition-all duration-300 hover:bg-secondary/20"
         >
+          <SwitchCamera className="h-4 w-4 mr-2 group-hover:rotate-180 transition-transform duration-500" />
           Swap Languages
         </Button>
         <Button 
           onClick={onTranslate}
           disabled={!sourceText || isTranslating}
-          className="mx-2"
+          className="hover:scale-105 transition-all duration-300"
         >
+          <ArrowLeftRight className="h-4 w-4 mr-2" />
           {isTranslating ? "Translating..." : "Translate"}
         </Button>
       </div>
-    </>
+    </div>
   );
 }
