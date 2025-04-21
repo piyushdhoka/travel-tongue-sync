@@ -28,8 +28,8 @@ export default function TranslationContent({
   onTranslate,
 }: TranslationContentProps) {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <TranslationCard
           title="Original"
           language={sourceLanguage}
@@ -51,11 +51,11 @@ export default function TranslationContent({
         />
       </div>
 
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-center gap-3 px-4">
         <Button 
           onClick={onSwapLanguages}
           variant="outline"
-          className="group hover:scale-105 transition-all duration-300 hover:bg-secondary/20"
+          className="group w-full sm:w-auto hover:scale-105 transition-all duration-300 hover:bg-secondary/20"
         >
           <SwitchCamera className="h-4 w-4 mr-2 group-hover:rotate-180 transition-transform duration-500" />
           Swap Languages
@@ -63,7 +63,7 @@ export default function TranslationContent({
         <Button 
           onClick={onTranslate}
           disabled={!sourceText || isTranslating}
-          className="hover:scale-105 transition-all duration-300"
+          className="w-full sm:w-auto hover:scale-105 transition-all duration-300"
         >
           <ArrowLeftRight className="h-4 w-4 mr-2" />
           {isTranslating ? "Translating..." : "Translate"}

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -25,15 +24,21 @@ export default function Auth() {
           password,
         });
         if (error) throw error;
-        navigate("/");
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { error, data } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: undefined,
+            data: {
+              email_confirm: true
+            }
+          }
         });
         if (error) throw error;
-        toast.success("Check your email to confirm your account!");
+        toast.success("Account created successfully!");
       }
+      navigate("/");
     } catch (error: any) {
       toast.error(error.message);
     } finally {

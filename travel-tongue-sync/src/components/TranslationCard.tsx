@@ -73,53 +73,67 @@ export default function TranslationCard({
   return (
     <Card 
       className={cn(
-        "w-full transition-all duration-300 ease-out transform hover:shadow-lg",
-        "border-opacity-50 backdrop-blur-sm",
+        "w-full transition-all duration-300 ease-out transform",
+        "border-opacity-50 backdrop-blur-sm min-h-[200px] flex flex-col",
         isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
         isTranslating && !isSource ? "animate-pulse" : "",
         className
       )}
     >
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+      <CardHeader className="pb-2 sm:pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <CardTitle className="text-lg sm:text-xl font-semibold flex items-center gap-2">
             {title}
             {isTranslating && !isSource && (
               <span className="inline-block animate-spin">⌛</span>
             )}
           </CardTitle>
-          <Badge variant="secondary" className="text-xs animate-fade-in hover:bg-primary/20">
+          <Badge variant="secondary" className="text-xs self-start sm:self-auto animate-fade-in hover:bg-primary/20">
             <span className="mr-1">🌐</span>
             {SUPPORTED_LANGUAGES.find(lang => lang.code === language)?.name || language}
           </Badge>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow">
         <Textarea
           placeholder={isSource ? "Enter text or speak..." : "Translation will appear here..."}
           value={text}
           onChange={(e) => isSource && onTextChange(e.target.value)}
           className={cn(
-            "min-h-24 resize-none transition-all duration-300",
+            "h-full min-h-[120px] resize-none transition-all duration-300",
             "focus:ring-2 focus:ring-primary focus:border-transparent",
+            "text-base sm:text-lg",
             isTranslating && !isSource ? "animate-pulse" : ""
           )}
           readOnly={!isSource}
         />
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-end gap-2 pt-2">
         {isSource ? (
           <Button
-            size="icon"
+            size="sm"
             variant={isListening ? "default" : "outline"}
             onClick={onListeningToggle}
-            className="transition-all duration-300 hover:scale-105"
+            className={cn(
+              "transition-all duration-300 hover:scale-105",
+              isListening && "animate-pulse bg-primary"
+            )}
           >
-            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            {isListening ? (
+              <>
+                <MicOff className="h-4 w-4 mr-2" />
+                Stop
+              </>
+            ) : (
+              <>
+                <Mic className="h-4 w-4 mr-2" />
+                Speak
+              </>
+            )}
           </Button>
         ) : (
           <Button
-            size="icon"
+            size="sm"
             variant="outline"
             onClick={handleSpeak}
             disabled={!text || isSpeaking}
@@ -128,7 +142,8 @@ export default function TranslationCard({
               isSpeaking && "animate-pulse"
             )}
           >
-            <Volume2 className="h-4 w-4" />
+            <Volume2 className="h-4 w-4 mr-2" />
+            Listen
           </Button>
         )}
       </CardFooter>

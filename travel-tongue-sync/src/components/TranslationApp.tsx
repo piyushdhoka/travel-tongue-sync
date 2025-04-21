@@ -2,16 +2,15 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./AuthProvider";
-import ApiKeyModal from "./ApiKeyModal";
-import { getApiKey, setApiKey, translateText } from "@/services/translationService";
+import { translateText } from "@/services/translationService";
 import { toast } from "@/components/ui/sonner";
 import { useNavigate } from "react-router-dom";
 import Header from "./translation/Header";
 import LanguageControls from "./translation/LanguageControls";
-import TranslationTabs from "./translation/TranslationTabs";
 import TranslationContent from "./translation/TranslationContent";
 import TranslationHistory from "./translation/TranslationHistory";
 import LanguageGreetingBar from "./translation/LanguageGreetingBar";
+import FlagSlideshow from "./translation/FlagSlideshow";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { BookOpen } from "lucide-react";
@@ -24,24 +23,9 @@ export default function TranslationApp() {
   const [targetLanguage, setTargetLanguage] = useState("es");
   const [sourceText, setSourceText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
-  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("voice");
   const [isListening, setIsListening] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-
-  useEffect(() => {
-    const storedApiKey = getApiKey();
-    if (!storedApiKey) {
-      const userProvidedKey = "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";
-      if (userProvidedKey) {
-        setApiKey(userProvidedKey);
-        toast.success("API key set successfully");
-      } else {
-        setIsApiKeyModalOpen(true);
-      }
-    }
-  }, []);
 
   const handleSwapLanguages = () => {
     setSourceLanguage(targetLanguage);
@@ -118,7 +102,6 @@ export default function TranslationApp() {
         <div className="container mx-auto max-w-5xl py-6 px-4">
           <Card className="relative p-6 shadow-xl bg-background/40 backdrop-blur-xl border border-border/20 rounded-xl">
             <Header
-              onSettingsClick={() => setIsApiKeyModalOpen(true)}
               onLogout={handleLogout}
             />
             
@@ -142,10 +125,6 @@ export default function TranslationApp() {
               </Dialog>
             </div>
 
-            <TranslationTabs
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            />
 
             <div className="transition-all duration-500 ease-in-out">
               <TranslationContent
@@ -161,12 +140,9 @@ export default function TranslationApp() {
                 onTranslate={handleTranslate}
               />
             </div>
-          </Card>
 
-          <ApiKeyModal 
-            isOpen={isApiKeyModalOpen}
-            onClose={() => setIsApiKeyModalOpen(false)}
-          />
+            <FlagSlideshow />
+          </Card>
         </div>
       </div>
     </div>
