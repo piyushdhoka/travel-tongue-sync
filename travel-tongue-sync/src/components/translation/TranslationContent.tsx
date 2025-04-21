@@ -7,10 +7,8 @@ interface TranslationContentProps {
   targetLanguage: string;
   sourceText: string;
   translatedText: string;
-  isListening: boolean;
   isTranslating: boolean;
   onSourceTextChange: (text: string) => void;
-  onListeningToggle: () => void;
   onSwapLanguages: () => void;
   onTranslate: () => void;
 }
@@ -20,10 +18,8 @@ export default function TranslationContent({
   targetLanguage,
   sourceText,
   translatedText,
-  isListening,
   isTranslating,
   onSourceTextChange,
-  onListeningToggle,
   onSwapLanguages,
   onTranslate,
 }: TranslationContentProps) {
@@ -36,8 +32,6 @@ export default function TranslationContent({
           text={sourceText}
           onTextChange={onSourceTextChange}
           isSource={true}
-          isListening={isListening}
-          onListeningToggle={onListeningToggle}
         />
         <TranslationCard
           title="Translation"
@@ -45,8 +39,6 @@ export default function TranslationContent({
           text={translatedText}
           onTextChange={() => {}}
           isSource={false}
-          isListening={false}
-          onListeningToggle={() => {}}
           isTranslating={isTranslating}
         />
       </div>

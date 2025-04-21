@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { LogOut, Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Globe } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
-interface HeaderProps {
-  onLogout: () => void;
-}
-
-export default function Header({ onLogout }: HeaderProps) {
+export default function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -16,7 +12,7 @@ export default function Header({ onLogout }: HeaderProps) {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <h1 className="flex items-center text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            <img src="/logo.png" alt="Travel Tongue Sync Logo" className="h-10 w-10 mr-3 object-contain" />
+            <img src="/logo.png" alt="Travel Tongue Sync Logo" className="h-8 w-8 mr-2 object-contain" />
             Travel Tongue Sync
           </h1>
           <Badge variant="outline" className="animate-fade-in">
@@ -36,14 +32,6 @@ export default function Header({ onLogout }: HeaderProps) {
             ) : (
               <Sun className="h-4 w-4" />
             )}
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="hover:scale-110 transition-transform"
-            onClick={onLogout}
-          >
-            <LogOut className="h-4 w-4" />
           </Button>
         </div>
       </div>
