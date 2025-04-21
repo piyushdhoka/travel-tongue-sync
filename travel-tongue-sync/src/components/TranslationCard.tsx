@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Mic, Volume2, StopCircle } from "lucide-react";
 import { SUPPORTED_LANGUAGES } from "@/services/translationService";
 import { cn } from "@/lib/utils";
 
@@ -25,10 +27,96 @@ export default function TranslationCard({
   isTranslating = false,
 }: TranslationCardProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
+    
+    // Initialize speech recognition only for source card
+    if (isSource && (window.SpeechRecognition || window.webkitSpeechRecognition)) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = language;
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join('');
+        
+        if (event.results[0].isFinal) {
+          onTextChange(transcript);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsRecording(false);
+      };
+
+      setRecognition(recognition);
+    }
+
+    return () => {
+      if (recognition) {
+        recognition.abort();
+      }
+    };
+  }, [language]);
+
+  const handleStartRecording = () => {
+    if (recognition && !isRecording) {
+      recognition.start();
+      setIsRecording(true);
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (recognition && isRecording) {
+      recognition.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const handleSpeak = () => {
+    if (!('speechSynthesis' in window)) {
+      console.error('Speech synthesis is not supported in this browser');
+      return;
+    }
+
+    if (!text) {
+      console.error('No text to speak');
+      return;
+    }
+
+    try {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = language;
+
+      // Add event listeners for debugging
+      utterance.onstart = () => {
+        console.log('Started speaking');
+      };
+
+      utterance.onend = () => {
+        console.log('Finished speaking');
+      };
+
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } catch (error) {
+      console.error('Error during speech synthesis:', error);
+    }
+  };
 
   return (
     <Card 
@@ -48,15 +136,42 @@ export default function TranslationCard({
               <span className="inline-block animate-spin">⌛</span>
             )}
           </CardTitle>
-          <Badge variant="secondary" className="text-xs self-start sm:self-auto animate-fade-in hover:bg-primary/20">
-            <span className="mr-1">🌐</span>
-            {SUPPORTED_LANGUAGES.find(lang => lang.code === language)?.name || language}
-          </Badge>
+          <div className="flex items-center gap-2">
+            {isSource && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={isRecording ? handleStopRecording : handleStartRecording}
+                className={cn(
+                  "transition-all duration-300",
+                  isRecording && "bg-red-500 text-white hover:bg-red-600"
+                )}
+              >
+                {isRecording ? <StopCircle className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </Button>
+            )}
+            {!isSource && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleSpeak}
+                disabled={!text}
+                className="transition-all duration-300"
+                title="Listen to translation"
+              >
+                <Volume2 className="h-4 w-4" />
+              </Button>
+            )}
+            <Badge variant="secondary" className="text-xs animate-fade-in hover:bg-primary/20">
+              <span className="mr-1">🌐</span>
+              {SUPPORTED_LANGUAGES.find(lang => lang.code === language)?.name || language}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="flex-grow">
         <Textarea
-          placeholder={isSource ? "Enter text..." : "Translation will appear here..."}
+          placeholder={isSource ? "Enter text or click the microphone to speak..." : "Translation will appear here..."}
           value={text}
           onChange={(e) => isSource && onTextChange(e.target.value)}
           className={cn(
